@@ -4,6 +4,6 @@ ListIt is a hobby project currently in development. It is a list app, that allow
 #### List ideas:
 - To do list
 - Long term goals
-- Favorite cat breeds
-- Ideas for my next extreemly original app idea
+- Favourite cat breeds
+- Ideas for my next extremely original app idea
 - This list
