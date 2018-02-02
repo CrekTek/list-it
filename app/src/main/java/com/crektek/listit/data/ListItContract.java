@@ -25,7 +25,7 @@ public class ListItContract {
         public static final String COLUMN_NAME_ORDER = "order";
     }
 
-    public static class listJoinItem implements BaseColumns {
+    public static class ListJoinItemEntry implements BaseColumns {
         public static final String TABLE_NAME = "list_item";
         public static final String COLUMN_NAME_LIST_ID = "list_id";
         public static final String COLUMN_NAME_ITEM_ID = "item_id";
