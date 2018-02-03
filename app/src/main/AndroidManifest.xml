@@ -16,6 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="com.crektek.listit.data.ListItContentProvider"
+            android:authorities="com.crektek.listit"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

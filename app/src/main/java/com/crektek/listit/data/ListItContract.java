@@ -1,5 +1,6 @@
 package com.crektek.listit.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -8,6 +9,13 @@ import android.provider.BaseColumns;
  * Created by George on 01/02/2018.
  */
 public class ListItContract {
+
+    public static final String AUTHORITY = "com.crektek.listit";
+
+    public static final Uri BASE_CONTENT_URL = Uri.parse("content://" + AUTHORITY);
+
+    public static final String PATH_ITEM = "items";
+    public static final String PATH_LIST = "lists";
 
     // Private constructor to stop instantiation
     private ListItContract() {}
