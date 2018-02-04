@@ -12,6 +12,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.crektek.listit.data.ListItContract.ItemEntry;
+import com.crektek.listit.data.ListItContract.ListEntry;
+
 /**
  * Created by George on 03/02/2018.
  */
@@ -26,6 +29,9 @@ public class ListItContentProvider extends ContentProvider {
     public static final int LISTS = 200;
     public static final int LIST_WITH_ID = 201;
     public static final int ITEMS_IN_LIST = 202;
+
+    private static final String LIST_TABLE_NAME = ListEntry.TABLE_NAME;
+    private static final String ITEM_TABLE_NAME = ItemEntry.TABLE_NAME;
 
     private static final UriMatcher mUriMatcher = buildUriMatcher();
 
@@ -54,8 +60,40 @@ public class ListItContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
-        return null;
+    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
+                        @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+
+        Log.d(TAG, "Dealing with query uri: " + uri);
+
+        SQLiteDatabase db = mListItDbHelper.getReadableDatabase();
+
+        int match = mUriMatcher.match(uri);
+        Cursor returnCursor;
+
+        switch (match) {
+            case LISTS:
+                returnCursor = db.query(LIST_TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case ITEMS_IN_LIST:
+                String listId = uri.getPathSegments().get(1);
+                returnCursor = db.rawQuery("SELECT " + ITEM_TABLE_NAME +
+                        ".* FROM " + ITEM_TABLE_NAME + " item " +
+                        "INNER JOIN " + LIST_TABLE_NAME + " list " +
+                        "ON item." + ItemEntry.COLUMN_NAME_LIST_ID + " = list._id " +
+                        "WHERE item." + ItemEntry.COLUMN_NAME_LIST_ID + " = ?",
+                        new String[]{listId});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        return returnCursor;
     }
 
     @Nullable
@@ -77,17 +115,17 @@ public class ListItContentProvider extends ContentProvider {
 
         switch (match) {
             case ITEMS:
-                long itemId = db.insert(ListItContract.ItemEntry.TABLE_NAME, null, contentValues);
+                long itemId = db.insert(ITEM_TABLE_NAME, null, contentValues);
                 if ( itemId > 0 ) {
-                    returnUri = ContentUris.withAppendedId(ListItContract.ItemEntry.CONTENT_URI, itemId);
+                    returnUri = ContentUris.withAppendedId(ItemEntry.CONTENT_URI, itemId);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;
             case LISTS:
-                long listId = db.insert(ListItContract.ListEntry.TABLE_NAME, null, contentValues);
+                long listId = db.insert(LIST_TABLE_NAME, null, contentValues);
                 if ( listId > 0 ) {
-                    returnUri = ContentUris.withAppendedId(ListItContract.ListEntry.CONTENT_URI, listId);
+                    returnUri = ContentUris.withAppendedId(ListEntry.CONTENT_URI, listId);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
