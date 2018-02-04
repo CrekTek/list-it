@@ -82,11 +82,10 @@ public class ListItContentProvider extends ContentProvider {
                 break;
             case ITEMS_IN_LIST:
                 String listId = uri.getPathSegments().get(1);
-                returnCursor = db.rawQuery("SELECT " + ITEM_TABLE_NAME +
-                        ".* FROM " + ITEM_TABLE_NAME + " item " +
-                        "INNER JOIN " + LIST_TABLE_NAME + " list " +
-                        "ON item." + ItemEntry.COLUMN_NAME_LIST_ID + " = list._id " +
-                        "WHERE item." + ItemEntry.COLUMN_NAME_LIST_ID + " = ?",
+                returnCursor = db.rawQuery("SELECT " + ITEM_TABLE_NAME + ".* FROM " +
+                                ITEM_TABLE_NAME + " item " + "INNER JOIN " +
+                                LIST_TABLE_NAME + " list " + "ON item." + ItemEntry.COLUMN_NAME_LIST_ID + " = list._id " +
+                                "WHERE item." + ItemEntry.COLUMN_NAME_LIST_ID + " = ?",
                         new String[]{listId});
                 break;
             default:
