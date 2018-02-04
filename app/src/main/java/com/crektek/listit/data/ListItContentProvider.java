@@ -2,6 +2,7 @@ package com.crektek.listit.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -12,6 +13,30 @@ import android.support.annotation.Nullable;
  */
 
 public class ListItContentProvider extends ContentProvider {
+
+    public static final int ITEMS = 100;
+    public static final int ITEM_WITH_ID = 101;
+
+    public static final int LISTS = 200;
+    public static final int LIST_WITH_ID = 201;
+    public static final int ITEMS_IN_LIST = 202;
+
+    private static final UriMatcher uriMatcher = buildUriMatcher();
+
+    private static UriMatcher buildUriMatcher() {
+        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+        uriMatcher.addURI(ListItContract.AUTHORITY, ListItContract.PATH_ITEM, ITEMS);
+        uriMatcher.addURI(ListItContract.AUTHORITY, ListItContract.PATH_ITEM + "/#", ITEM_WITH_ID);
+
+        uriMatcher.addURI(ListItContract.AUTHORITY, ListItContract.PATH_LIST, LISTS);
+        uriMatcher.addURI(ListItContract.AUTHORITY, ListItContract.PATH_LIST + "/#", LIST_WITH_ID);
+        uriMatcher.addURI(ListItContract.AUTHORITY, ListItContract.PATH_LIST + "/#/" +
+            ListItContract.PATH_ITEM, ITEMS_IN_LIST);
+
+        return uriMatcher;
+    }
+
     @Override
     public boolean onCreate() {
         return false;

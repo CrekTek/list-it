@@ -21,12 +21,20 @@ public class ListItContract {
     private ListItContract() {}
 
     public static class ItemEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URL.buildUpon()
+                .appendPath(PATH_ITEM).build();
+
         public static final String TABLE_NAME = "item";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
         public static final String COLUMN_NAME_ORDER = "order";
     }
 
     public static class ListEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URL.buildUpon()
+                .appendPath(PATH_LIST).build();
+
         public static final String TABLE_NAME = "list";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_TYPE = "type";
