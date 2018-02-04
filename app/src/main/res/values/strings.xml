@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">List It</string>
+
+    <string name="add_list_hint">Give your list a name...</string>
 </resources>

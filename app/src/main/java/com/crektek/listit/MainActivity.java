@@ -1,9 +1,11 @@
 package com.crektek.listit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,5 +31,10 @@ public class MainActivity extends AppCompatActivity {
 
         mListAdapter = new ListAdapter(data);
         mRecyclerView.setAdapter(mListAdapter);
+    }
+
+    public void onClickLaunchAddListActivity(View view) {
+        Intent addListIntent = new Intent(MainActivity.this, AddListActivity.class);
+        startActivity(addListIntent);
     }
 }

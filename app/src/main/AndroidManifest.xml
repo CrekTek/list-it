@@ -18,10 +18,11 @@
         </activity>
 
         <provider
-            android:name="com.crektek.listit.data.ListItContentProvider"
+            android:name=".data.ListItContentProvider"
             android:authorities="com.crektek.listit"
-            android:exported="false"/>
+            android:exported="false" />
 
+        <activity android:name=".AddListActivity"></activity>
     </application>
 
 </manifest>
