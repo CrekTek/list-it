@@ -2,4 +2,5 @@
     <string name="app_name">List It</string>
 
     <string name="add_list_hint">Give your list a name...</string>
+    <string name="create_list_button">Create List</string>
 </resources>

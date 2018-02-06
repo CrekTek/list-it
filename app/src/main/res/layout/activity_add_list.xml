@@ -5,9 +5,20 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/et_item_description"
+        android:id="@+id/et_list_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/add_list_hint"/>
+
+    <Button
+        android:id="@+id/bn_create_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/create_list_button"
+        style="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@android:color/primary_text_dark"
+        android:background="@color/colorPrimary"
+        android:onClick="onClickCreateList"/>
 
 </LinearLayout>
