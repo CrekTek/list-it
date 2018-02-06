@@ -27,7 +27,7 @@ public class ListItContract {
 
         public static final String TABLE_NAME = "item";
         public static final String COLUMN_NAME_DESCRIPTION = "description";
-        public static final String COLUMN_NAME_ORDER = "order";
+        public static final String COLUMN_NAME_PRIORITY = "priority";
         public static final String COLUMN_NAME_LIST_ID = "list_id";
     }
 
@@ -39,6 +39,6 @@ public class ListItContract {
         public static final String TABLE_NAME = "list";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_TYPE = "type";
-        public static final String COLUMN_NAME_ORDER = "order";
+        public static final String COLUMN_NAME_PRIORITY = "priority";
     }
 }

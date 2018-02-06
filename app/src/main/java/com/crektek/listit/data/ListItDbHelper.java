@@ -26,8 +26,8 @@ public class ListItDbHelper extends SQLiteOpenHelper {
         final String CREATE_ITEM_TABLE = "CREATE TABLE " + ItemEntry.TABLE_NAME + " (" +
                 ItemEntry._ID + " INTEGER PRIMARY KEY, " +
                 ItemEntry.COLUMN_NAME_DESCRIPTION + " TEXT NOT NULL, " +
-                ItemEntry.COLUMN_NAME_ORDER + " INTEGER NOT NULL, " +
-                ItemEntry.COLUMN_NAME_LIST_ID + "INTEGER NOT NULL, " +
+                ItemEntry.COLUMN_NAME_PRIORITY + " INTEGER NOT NULL, " +
+                ItemEntry.COLUMN_NAME_LIST_ID + " INTEGER NOT NULL, " +
                 "FOREIGN KEY (" + ItemEntry.COLUMN_NAME_LIST_ID + ") REFERENCES " +
                     ListEntry.TABLE_NAME + " (" + ListEntry._ID + "));";
 
@@ -35,7 +35,7 @@ public class ListItDbHelper extends SQLiteOpenHelper {
                 ListEntry._ID + " INTEGER PRIMARY KEY, " +
                 ListEntry.COLUMN_NAME_TITLE + " TEXT NOT NULL, " +
                 ListEntry.COLUMN_NAME_TYPE + " TEXT NOT NULL, " +
-                ListEntry.COLUMN_NAME_ORDER + " INTEGER NOT NULL);";
+                ListEntry.COLUMN_NAME_PRIORITY + " INTEGER NOT NULL);";
 
         db.execSQL(CREATE_ITEM_TABLE);
         db.execSQL(CREATE_LIST_TABLE);
