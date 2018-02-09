@@ -14,10 +14,14 @@ public class AddListActivity extends AppCompatActivity {
 
     private static final String TAG = AddListActivity.class.getSimpleName();
 
+    private int mNextPriority;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_list);
+
+        mNextPriority = getIntent().getIntExtra(getString(R.string.list_count_extra), Integer.MAX_VALUE);
     }
 
     public void onClickCreateList(View view) {
@@ -30,7 +34,7 @@ public class AddListActivity extends AppCompatActivity {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ListItContract.ListEntry.COLUMN_NAME_TITLE, input);
         contentValues.put(ListItContract.ListEntry.COLUMN_NAME_TYPE, "TODO");
-        contentValues.put(ListItContract.ListEntry.COLUMN_NAME_PRIORITY, 1);
+        contentValues.put(ListItContract.ListEntry.COLUMN_NAME_PRIORITY, mNextPriority);
 
         Uri uri = getContentResolver().insert(ListItContract.ListEntry.CONTENT_URI, contentValues);
 

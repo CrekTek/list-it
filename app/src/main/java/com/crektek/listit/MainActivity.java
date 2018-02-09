@@ -1,5 +1,6 @@
 package com.crektek.listit;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private RecyclerView.LayoutManager mLayoutManager;
     private ListAdapter mListAdapter;
 
+    private boolean orderChanged = false;
+
     public List<ListEntity> mLists;
 
     @Override
@@ -53,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mListAdapter = new ListAdapter(this);
         mRecyclerView.setAdapter(mListAdapter);
 
+        DividerItemDecoration itemDecor = new DividerItemDecoration(mRecyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        mRecyclerView.addItemDecoration(itemDecor);
+
         new ItemTouchHelper(new ListItItemTouchHelperCallback(this, mListAdapter))
                 .attachToRecyclerView(mRecyclerView);
 
@@ -67,8 +74,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getSupportLoaderManager().restartLoader(LIST_LOADER_ID, null, this);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        persistNewPriorities();
+    }
+
     public void onClickLaunchAddListActivity(View view) {
         Intent addListIntent = new Intent(MainActivity.this, AddListActivity.class);
+
+        addListIntent.putExtra(getString(R.string.list_count_extra), mLists.size());
+
         startActivity(addListIntent);
     }
 
@@ -81,6 +98,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         uri = uri.buildUpon().appendPath(stringId).build();
 
         getContentResolver().delete(uri, null, null);
+
+        // First update the priorities before data reload.
+        orderChanged = true;
+        persistNewPriorities();
 
         getSupportLoaderManager().restartLoader(LIST_LOADER_ID, null, MainActivity.this);
     }
@@ -98,6 +119,40 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         }
         mListAdapter.notifyItemMoved(fromPosition, toPosition);
+        orderChanged = true;
+    }
+
+    /**
+     * Checks if the order of ListEntities has changed, if it has then the priorities are updated.
+     */
+    private void persistNewPriorities() {
+        if(orderChanged) {
+            Log.i(TAG, "Order of lists has changed so updating priorities");
+
+            int priority = 0;
+
+            for(ListEntity listEntity : mLists) {
+                ContentValues contentValues = new ContentValues();
+
+                contentValues.put(ListItContract.ListEntry.COLUMN_NAME_PRIORITY, priority);
+
+                String stringId = Integer.toString(listEntity.getId());
+                Uri uri = ListItContract.ListEntry.CONTENT_URI;
+                uri = uri.buildUpon().appendPath(stringId).build();
+
+                getContentResolver().update(uri, contentValues,
+                        null, null);
+
+                Log.d(TAG, "Updated List entry of id: " + listEntity.getId() +
+                        " with priority: " + priority);
+
+                priority++;
+            }
+
+            Log.i(TAG, "Finished updating priorities.");
+
+            orderChanged = false;
+        }
     }
 
     @Override

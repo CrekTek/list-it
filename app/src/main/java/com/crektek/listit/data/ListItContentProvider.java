@@ -131,7 +131,7 @@ public class ListItContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+    public int delete(@NonNull Uri uri, @Nullable String whereClause, @Nullable String[] whereArgs) {
 
         Log.d(TAG, "Dealing with delete uri: " + uri);
 
@@ -139,31 +139,54 @@ public class ListItContentProvider extends ContentProvider {
 
         int match = mUriMatcher.match(uri);
 
-        int tasksDeleted;
+        int itemsDeleted;
 
         switch (match) {
             case LIST_WITH_ID:
                 // TODO This will need to change in order to account for deletion of list items under the list.
                 String id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                tasksDeleted = db.delete(LIST_TABLE_NAME, "_id=?", new String[]{id});
+                itemsDeleted = db.delete(LIST_TABLE_NAME, "_id=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         // Notify the resolver of a change
-        if (tasksDeleted != 0) {
+        if (itemsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
         // Return the number of tasks deleted
-        return tasksDeleted;
+        return itemsDeleted;
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues,
+                      @Nullable String whereClause, @Nullable String[] whereArgs) {
+        Log.d(TAG, "Dealing with update uri: " + uri);
+
+        final SQLiteDatabase db = mListItDbHelper.getWritableDatabase();
+
+        int match = mUriMatcher.match(uri);
+
+        int itemsUpdated;
+
+        switch (match) {
+            case LIST_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                itemsUpdated = db.update(LIST_TABLE_NAME, contentValues, "_id=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Notify the resolver of a change
+        if (itemsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return itemsUpdated;
     }
 
     @Nullable
