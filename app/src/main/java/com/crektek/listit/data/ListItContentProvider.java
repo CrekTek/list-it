@@ -65,7 +65,7 @@ public class ListItContentProvider extends ContentProvider {
 
         Log.d(TAG, "Dealing with query uri: " + uri);
 
-        SQLiteDatabase db = mListItDbHelper.getReadableDatabase();
+        final SQLiteDatabase db = mListItDbHelper.getReadableDatabase();
 
         int match = mUriMatcher.match(uri);
         Cursor returnCursor;
@@ -101,7 +101,7 @@ public class ListItContentProvider extends ContentProvider {
 
         Log.d(TAG, "Dealing with insert uri: " + uri);
 
-        SQLiteDatabase db = mListItDbHelper.getWritableDatabase();
+        final SQLiteDatabase db = mListItDbHelper.getWritableDatabase();
 
         int match = mUriMatcher.match(uri);
         Uri returnUri;
@@ -132,7 +132,33 @@ public class ListItContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+
+        Log.d(TAG, "Dealing with delete uri: " + uri);
+
+        final SQLiteDatabase db = mListItDbHelper.getWritableDatabase();
+
+        int match = mUriMatcher.match(uri);
+
+        int tasksDeleted;
+
+        switch (match) {
+            case LIST_WITH_ID:
+                // TODO This will need to change in order to account for deletion of list items under the list.
+                String id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+                tasksDeleted = db.delete(LIST_TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Notify the resolver of a change
+        if (tasksDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of tasks deleted
+        return tasksDeleted;
     }
 
     @Override
